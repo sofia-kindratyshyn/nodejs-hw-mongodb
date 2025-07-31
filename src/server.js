@@ -2,10 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
 import { getEnvVar } from './utils/getEnv.js';
+import { getAllContacts } from './services/contacts.js';
 
 const PORT = Number(getEnvVar('PORT'));
 
-export function setupServer() {
+export async function setupServer() {
   const app = express();
   app.use(
     cors(),
@@ -15,7 +16,13 @@ export function setupServer() {
       },
     }),
   );
-  app.get('/', (req, res) => {
+  app.get('/contacts', (req, res) => {
+    const contacts = getAllContacts();
+    res.json({
+      contacts,
+    });
+  });
+  app.get('/contacts/:contactId', (req, res) => {
     res.json({
       message: 'hello user!',
     });
