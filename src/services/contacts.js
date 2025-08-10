@@ -20,13 +20,14 @@ export async function postContact(payload) {
   return contact;
 }
 
-export async function updateContact(id, payload) {
-  const contact = await contactsCollection.findByIdAndUpdate(
-    { _id: id },
-    {
-      update: true,
-    },
+export async function patchContact(contactId, payload, options = {}) {
+  const contact = await contactsCollection.findOneAndUpdate(
+    { _id: contactId },
     payload,
   );
-  return contact;
+
+  return {
+    contact: contact.value,
+    isNew: Boolean(contact?.lastErrorObject?.upserted),
+  };
 }
