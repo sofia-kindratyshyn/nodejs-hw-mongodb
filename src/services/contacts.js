@@ -11,7 +11,7 @@ export async function getContactById(contactId) {
 }
 
 export async function deleteContact(contactId) {
-  const contact = await contactsCollection.deleteOne({ _id: contactId });
+  const contact = await contactsCollection.findOneAndDelete({ _id: contactId });
   return contact;
 }
 
@@ -24,10 +24,8 @@ export async function patchContact(contactId, payload, options = {}) {
   const contact = await contactsCollection.findOneAndUpdate(
     { _id: contactId },
     payload,
+    { new: true },
   );
 
-  return {
-    contact: contact.value,
-    isNew: Boolean(contact?.lastErrorObject?.upserted),
-  };
+  return contact;
 }
