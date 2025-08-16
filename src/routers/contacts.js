@@ -6,6 +6,11 @@ import {
   postContactController,
   patchContactController,
 } from '../controllers/contacts.js';
+import { validateBody } from '../middlewars/validateBody.js';
+import {
+  createPostContactSchema,
+  updateContactSchema,
+} from '../validation/validateSchemas.js';
 
 const router = Router();
 
@@ -15,8 +20,16 @@ router.get('/contacts/:contactId', getContactByIdController);
 
 router.delete('/contacts/:contactId', deleteContactController);
 
-router.post('/contacts', postContactController);
+router.post(
+  '/contacts',
+  validateBody(createPostContactSchema),
+  postContactController,
+);
 
-router.patch('/contacts/:contactId', patchContactController);
+router.patch(
+  '/contacts/:contactId',
+  validateBody(updateContactSchema),
+  patchContactController,
+);
 
 export default router;
