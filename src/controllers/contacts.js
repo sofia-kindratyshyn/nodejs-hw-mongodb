@@ -11,8 +11,16 @@ import { validateQuery } from '../middlewars/validateBody.js';
 import { validatePaginationSchema } from '../validation/validateSchemas.js';
 
 export const getContactsController = async (req, res) => {
+  const { page, perPage, sortOrder, sortBy, ...other } = req.query;
   await validateQuery(validatePaginationSchema);
-  const contacts = await getAllContacts(req.query);
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortOrder,
+    sortBy,
+    filter: other,
+  });
+
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts!',
