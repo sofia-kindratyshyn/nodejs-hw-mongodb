@@ -1,10 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
+import cookieParser from 'cookie-parser';
 import { getEnvVar } from './utils/getEnv.js';
 import router from './routers/contacts.js';
 import { errorHandler } from './middlewars/errorHandler.js';
 import { notFoundErr } from './middlewars/notFoundError.js';
+import { authRouter } from './routers/auth.js';
 
 const PORT = Number(getEnvVar('PORT'));
 
@@ -21,6 +23,11 @@ export async function setupServer() {
       },
     }),
   );
+
+  app.use(cookieParser());
+
+  app.use(authRouter);
+
   app.use(router);
 
   app.use(notFoundErr);
