@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   authLoginController,
   authRegisterController,
+  logoutController,
   refreshTokenController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewars/validateBody.js';
@@ -23,5 +24,7 @@ authRouter.post(
   validateBody(loginValidationSchema),
   authLoginController,
 );
+
+authRouter.post('/auth/logout', logoutController);
 
 authRouter.post('/auth/refresh', refreshTokenController);

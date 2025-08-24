@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import { SessionCollection } from '../models/session.js';
 import { randomBytes } from 'crypto';
 
-const createSession = () => {
+const createSession = async () => {
   const accessToken = randomBytes(30).toString('base64');
   const refreshToken = randomBytes(30).toString('base64');
 
@@ -40,7 +40,7 @@ export const loginUser = async (payload) => {
   }
   await SessionCollection.deleteOne({ userId: loginedUser._id });
 
-  const newSession = createSession();
+  const newSession = await createSession();
 
   return SessionCollection.create({
     userId: loginedUser._id,
@@ -74,4 +74,8 @@ export const refreshToken = async ({ sessionId, refreshToken }) => {
     userId: sessionId,
     ...newSession,
   });
+};
+
+export const logout = async (sessionId) => {
+  await SessionCollection.deleteOne({ userId: sessionId });
 };

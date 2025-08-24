@@ -11,8 +11,11 @@ import {
   createPostContactSchema,
   updateContactSchema,
 } from '../validation/validateSchemas.js';
+import { authenticate } from '../middlewars/authenticate.js';
 
 const router = Router();
+
+router.use(authenticate);
 
 router.get('/contacts', getContactsController);
 
