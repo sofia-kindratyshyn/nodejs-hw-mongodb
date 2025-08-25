@@ -11,6 +11,7 @@ import { validateQuery } from '../middlewars/validateBody.js';
 import { validatePaginationSchema } from '../validation/validateSchemas.js';
 
 export const getContactsController = async (req, res) => {
+  const parentId = req.user._id;
   const { page, perPage, sortOrder, sortBy, ...other } = req.query;
   await validateQuery(validatePaginationSchema);
   const contacts = await getAllContacts({
@@ -18,7 +19,7 @@ export const getContactsController = async (req, res) => {
     perPage,
     sortOrder,
     sortBy,
-    filter: other,
+    filter: { ...other, parentId },
   });
 
   res.status(200).json({
@@ -56,8 +57,10 @@ export const deleteContactController = async (req, res, next) => {
 };
 
 export const postContactController = async (req, res) => {
-  const payload = req.body;
-  const contact = await postContact(payload);
+  const contact = await postContact({
+    ...req.body,
+    parentId: req.body.parentId ?? req.user._id,
+  });
 
   res.status(201).json({
     status: 201,

@@ -12,6 +12,8 @@ export async function getAllContacts({
   const skip = limit * (page - 1);
 
   const baseFilter = {};
+
+  if (filter.parentId) baseFilter.parentId = filter.parentId;
   if (filter.contactType) baseFilter.contactType = filter.contactType;
   if (filter.isFavourite) baseFilter.isFavourite = filter.isFavourite;
   if (filter.name) baseFilter.name = { $regex: filter.name, $options: 'i' };

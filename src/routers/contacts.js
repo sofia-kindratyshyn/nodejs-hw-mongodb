@@ -12,10 +12,13 @@ import {
   updateContactSchema,
 } from '../validation/validateSchemas.js';
 import { authenticate } from '../middlewars/authenticate.js';
+import { checkPermissions } from '../middlewars/checkPermissions.js';
 
 const router = Router();
 
-router.use(authenticate);
+router.use('/contacts', authenticate);
+
+router.use('/contscts/:contactId', checkPermissions);
 
 router.get('/contacts', getContactsController);
 

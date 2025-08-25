@@ -68,14 +68,14 @@ export const refreshToken = async ({ sessionId, refreshToken }) => {
     _id: sessionId,
   });
 
-  const newSession = createSession();
+  const newSession = await createSession();
 
   return SessionCollection.create({
-    userId: sessionId,
+    userId: session.userId,
     ...newSession,
   });
 };
 
 export const logout = async (sessionId) => {
-  await SessionCollection.deleteOne({ userId: sessionId });
+  await SessionCollection.deleteOne({ _id: sessionId });
 };

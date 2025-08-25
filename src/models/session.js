@@ -1,9 +1,11 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
+import { UserCollection } from './user.js';
 
 const schema = new Schema(
   {
     userId: {
-      type: String,
+      type: Types.ObjectId,
+      ref: UserCollection,
       required: true,
     },
     accessToken: {

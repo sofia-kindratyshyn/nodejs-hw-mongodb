@@ -36,15 +36,25 @@ export const authLoginController = async (req, res) => {
 };
 
 export const refreshTokenController = async (req, res) => {
-  const token = await refreshToken({
+  const session = await refreshToken({
     sessionId: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
+  });
+
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: session.accessTokenValidUntil,
+  });
+
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
   });
 
   res.status(200).json({
     status: 200,
     message: 'Successfully refreshed a session!',
-    data: { accessToken: token.accessToken },
+    data: { accessToken: session.accessToken },
   });
 };
 
