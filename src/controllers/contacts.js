@@ -11,7 +11,7 @@ import { validateQuery } from '../middlewars/validateBody.js';
 import { validatePaginationSchema } from '../validation/validateSchemas.js';
 
 export const getContactsController = async (req, res) => {
-  const parentId = req.user._id;
+  const userId = req.user._id;
   const { page, perPage, sortOrder, sortBy, ...other } = req.query;
   await validateQuery(validatePaginationSchema);
   const contacts = await getAllContacts({
@@ -19,7 +19,7 @@ export const getContactsController = async (req, res) => {
     perPage,
     sortOrder,
     sortBy,
-    filter: { ...other, parentId },
+    filter: { ...other, userId },
   });
 
   res.status(200).json({
@@ -29,9 +29,10 @@ export const getContactsController = async (req, res) => {
   });
 };
 export const getContactByIdController = async (req, res, next) => {
+  const userId = req.user._id;
   const { contactId } = req.params;
   const id = validateContactId(contactId);
-  const contact = await getContactById(id);
+  const contact = await getContactById(id, userId);
 
   if (!contact) {
     next(createHttpError(404, 'Contact not found'));
@@ -46,8 +47,9 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const deleteContactController = async (req, res, next) => {
+  const userId = req.user._id;
   const { contactId } = req.params;
-  const contactToDelete = await deleteContact(contactId);
+  const contactToDelete = await deleteContact(contactId, userId);
 
   if (!contactToDelete) {
     next(createHttpError(404, 'Contact not found'));
@@ -59,7 +61,7 @@ export const deleteContactController = async (req, res, next) => {
 export const postContactController = async (req, res) => {
   const contact = await postContact({
     ...req.body,
-    parentId: req.body.parentId ?? req.user._id,
+    userId: req.body.userId ?? req.user._id,
   });
 
   res.status(201).json({
@@ -70,8 +72,9 @@ export const postContactController = async (req, res) => {
 };
 
 export const patchContactController = async (req, res, next) => {
+  const userId = req.user._id;
   const { contactId } = req.params;
-  const result = await patchContact(contactId, req.body);
+  const result = await patchContact(contactId, req.body, userId);
 
   if (!result) {
     next(createHttpError(404, 'Contact not found'));

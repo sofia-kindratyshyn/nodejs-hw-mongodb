@@ -24,7 +24,7 @@ const schema = new Schema(
       default: 'personal',
       enum: ['work', 'home', 'personal'],
     },
-    parentId: {
+    userId: {
       type: Types.ObjectId,
       ref: UserCollection,
       required: true,
