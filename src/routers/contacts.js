@@ -16,7 +16,7 @@ import { checkPermissions } from '../middlewars/checkPermissions.js';
 
 const router = Router();
 
-router.use('/contacts', authenticate);
+router.use(authenticate);
 
 router.use('/contscts/:contactId', checkPermissions);
 

@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { objIdValidation } from '../utils/objIdValidation.js';
+//import { objIdValidation } from '../utils/objIdValidation.js';
 
 export const createPostContactSchema = Joi.object({
   name: Joi.string().required().min(3).max(20),
@@ -14,7 +14,6 @@ export const createPostContactSchema = Joi.object({
   contactType: Joi.string()
     .valid('work', 'home', 'personal')
     .default('personal'),
-  parentId: objIdValidation,
 });
 
 export const updateContactSchema = Joi.object({
@@ -26,7 +25,6 @@ export const updateContactSchema = Joi.object({
   }),
   isFavourite: Joi.boolean(),
   contactType: Joi.string().valid('work', 'home', 'personal'),
-  userId: objIdValidation,
 });
 
 export const validatePaginationSchema = Joi.object({

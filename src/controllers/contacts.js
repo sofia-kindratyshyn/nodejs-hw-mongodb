@@ -61,7 +61,7 @@ export const deleteContactController = async (req, res, next) => {
 export const postContactController = async (req, res) => {
   const contact = await postContact({
     ...req.body,
-    userId: req.body.userId ?? req.user._id,
+    userId: req.user._id,
   });
 
   res.status(201).json({

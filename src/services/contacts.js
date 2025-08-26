@@ -60,8 +60,8 @@ export async function deleteContact(contactId, userId) {
   return contact;
 }
 
-export async function postContact(payload, userId) {
-  const contact = await contactsCollection.insertOne({ payload, userId });
+export async function postContact(payload) {
+  const contact = await contactsCollection.create(payload);
   return contact;
 }
 
