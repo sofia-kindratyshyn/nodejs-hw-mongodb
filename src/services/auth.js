@@ -3,6 +3,9 @@ import { UserCollection } from '../models/user.js';
 import bcrypt from 'bcrypt';
 import { SessionCollection } from '../models/session.js';
 import { randomBytes } from 'crypto';
+import { sendMail } from '../utils/sendEmailTransporter.js';
+import jwt from 'jsonwebtoken';
+import { getEnvVar } from '../utils/getEnv.js';
 
 const createSession = async () => {
   const accessToken = randomBytes(30).toString('base64');
@@ -78,4 +81,66 @@ export const refreshToken = async ({ sessionId, refreshToken }) => {
 
 export const logout = async (sessionId) => {
   await SessionCollection.deleteOne({ _id: sessionId });
+};
+
+export const sendResetEmail = async (email) => {
+  try {
+    const user = await UserCollection.findOne({ email });
+
+    if (!user) {
+      throw createHttpError(404, 'User not found!');
+    }
+
+    const jwtToken = jwt.sign(
+      {
+        sub: `${user._id}`,
+        email: `${user.email}`,
+      },
+      getEnvVar('JWT_SECRET'),
+      {
+        expiresIn: '5m',
+      },
+    );
+
+    return await sendMail(jwtToken, email, user);
+  } catch (err) {
+    console.log(err);
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',
+    );
+  }
+};
+
+export const resetPassword = async (password, token) => {
+  const encodedToken = await jwt.decode(token);
+  const user = await UserCollection.findOne({
+    _id: encodedToken.sub,
+    email: encodedToken.email,
+  });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found!');
+  }
+
+  const isPasswordNew = await bcrypt.compare(password, user.password);
+
+  if (isPasswordNew) {
+    throw createHttpError(
+      400,
+      'New password must be different from the old one.',
+    );
+  }
+
+  if (Date.now() > encodedToken.exp * 1000) {
+    throw createHttpError(401, 'Token is expired or invalid.');
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await UserCollection.findByIdAndUpdate(encodedToken.sub, {
+    password: hashedPassword,
+  });
+
+  await SessionCollection.deleteOne({ userId: encodedToken.sub });
 };

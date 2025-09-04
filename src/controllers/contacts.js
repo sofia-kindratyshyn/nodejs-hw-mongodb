@@ -9,6 +9,9 @@ import {
 import { validateContactId } from '../validation/validateContactId.js';
 import { validateQuery } from '../middlewars/validateBody.js';
 import { validatePaginationSchema } from '../validation/validateSchemas.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { getEnvVar } from '../utils/getEnv.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinari.js';
 
 export const getContactsController = async (req, res) => {
   const userId = req.user._id;
@@ -59,8 +62,18 @@ export const deleteContactController = async (req, res, next) => {
 };
 
 export const postContactController = async (req, res) => {
+  const payload = { ...req.body };
+  if (req.file) {
+    let url;
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      url = await saveFileToCloudinary(req.file);
+    } else {
+      url = await saveFileToUploadDir(req.file);
+    }
+    payload.photo = url;
+  }
   const contact = await postContact({
-    ...req.body,
+    payload,
     userId: req.user._id,
   });
 
@@ -73,8 +86,20 @@ export const postContactController = async (req, res) => {
 
 export const patchContactController = async (req, res, next) => {
   const userId = req.user._id;
+  const payload = { ...req.body };
+  if (req.file) {
+    let url;
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      url = await saveFileToCloudinary(req.file);
+    } else {
+      url = await saveFileToUploadDir(req.file);
+    }
+    payload.photo = url;
+  }
+
   const { contactId } = req.params;
-  const result = await patchContact(contactId, req.body, userId);
+
+  const result = await patchContact(contactId, payload, userId);
 
   if (!result) {
     next(createHttpError(404, 'Contact not found'));

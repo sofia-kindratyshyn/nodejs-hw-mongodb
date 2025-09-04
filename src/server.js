@@ -7,6 +7,7 @@ import router from './routers/contacts.js';
 import { errorHandler } from './middlewars/errorHandler.js';
 import { notFoundErr } from './middlewars/notFoundError.js';
 import { authRouter } from './routers/auth.js';
+import { TEMP_UPLOAD_DIR, UPLOAD_DIR } from './constants/index.js';
 
 const PORT = Number(getEnvVar('PORT'));
 
@@ -25,6 +26,10 @@ export async function setupServer() {
   );
 
   app.use(cookieParser());
+
+  app.use('/uploads', express.static(UPLOAD_DIR));
+  console.log(UPLOAD_DIR);
+  console.log(TEMP_UPLOAD_DIR);
 
   app.use(authRouter);
 

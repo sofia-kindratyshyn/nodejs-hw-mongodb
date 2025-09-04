@@ -13,6 +13,7 @@ import {
 } from '../validation/validateSchemas.js';
 import { authenticate } from '../middlewars/authenticate.js';
 import { checkPermissions } from '../middlewars/checkPermissions.js';
+import { uploads } from '../middlewars/multer.js';
 
 const router = Router();
 
@@ -29,12 +30,14 @@ router.delete('/contacts/:contactId', deleteContactController);
 router.post(
   '/contacts',
   validateBody(createPostContactSchema),
+  uploads.single('photo'),
   postContactController,
 );
 
 router.patch(
   '/contacts/:contactId',
   validateBody(updateContactSchema),
+  uploads.single('photo'),
   patchContactController,
 );
 

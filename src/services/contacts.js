@@ -68,8 +68,12 @@ export async function postContact(payload) {
 export async function patchContact(contactId, payload, userId, options = {}) {
   const contact = await contactsCollection.findOneAndUpdate(
     { _id: contactId, userId },
-    payload,
-    { new: true },
+    { $set: payload },
+    {
+      new: true,
+      runValidators: true,
+      ...options,
+    },
   );
 
   return contact;
