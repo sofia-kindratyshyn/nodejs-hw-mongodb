@@ -114,6 +114,8 @@ export const sendResetEmail = async (email) => {
 
 export const resetPassword = async (password, token) => {
   const encodedToken = await jwt.decode(token);
+
+  console.log(encodedToken);
   const user = await UserCollection.findOne({
     _id: encodedToken.sub,
     email: encodedToken.email,

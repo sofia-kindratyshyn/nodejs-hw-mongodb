@@ -61,8 +61,11 @@ export const deleteContactController = async (req, res, next) => {
   res.json(204);
 };
 
+const body = { name: 'Ada', phoneNumber: '+65467890089' };
+console.log({ ...body });
+
 export const postContactController = async (req, res) => {
-  const payload = { ...req.body };
+  const payload = await { ...req.body };
   if (req.file) {
     let url;
     if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {

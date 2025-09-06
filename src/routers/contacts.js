@@ -29,15 +29,15 @@ router.delete('/contacts/:contactId', deleteContactController);
 
 router.post(
   '/contacts',
-  validateBody(createPostContactSchema),
   uploads.single('photo'),
+  validateBody(createPostContactSchema),
   postContactController,
 );
 
 router.patch(
   '/contacts/:contactId',
-  validateBody(updateContactSchema),
   uploads.single('photo'),
+  validateBody(updateContactSchema),
   patchContactController,
 );
 
