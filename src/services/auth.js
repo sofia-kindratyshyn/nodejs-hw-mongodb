@@ -6,6 +6,10 @@ import { randomBytes } from 'crypto';
 import { sendMail } from '../utils/sendEmailTransporter.js';
 import jwt from 'jsonwebtoken';
 import { getEnvVar } from '../utils/getEnv.js';
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuth2.js';
 
 const createSession = async () => {
   const accessToken = randomBytes(30).toString('base64');
@@ -145,4 +149,27 @@ export const resetPassword = async (password, token) => {
   });
 
   await SessionCollection.deleteOne({ userId: encodedToken.sub });
+};
+
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  if (!payload) throw createHttpError(401);
+
+  let user = await UserCollection.findOne({ email: payload.email });
+  if (!user) {
+    const password = await bcrypt.hash(randomBytes(10), 10);
+    user = await UserCollection.create({
+      email: payload.email,
+      name: getFullNameFromGoogleTokenPayload(payload),
+      password,
+    });
+  }
+
+  const newSession = await createSession();
+
+  return await SessionCollection.create({
+    userId: user._id,
+    ...newSession,
+  });
 };

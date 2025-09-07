@@ -17,7 +17,7 @@ import { uploads } from '../middlewars/multer.js';
 
 const router = Router();
 
-router.use(authenticate);
+router.use('/contacts', authenticate);
 
 router.use('/contscts/:contactId', checkPermissions);
 

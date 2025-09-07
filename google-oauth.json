@@ -1,0 +1,11 @@
+{
+  "web": {
+    "client_id": "84684089348-2r9auj9rli3dfnks53vckf5v44teokfp.apps.googleusercontent.com",
+    "project_id": "daring-diode-471321-v4",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": ["http://localhost:3000/confirm-google-auth"]
+  }
+}

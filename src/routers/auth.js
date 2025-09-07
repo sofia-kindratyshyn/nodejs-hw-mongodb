@@ -2,6 +2,8 @@ import { Router } from 'express';
 import {
   authLoginController,
   authRegisterController,
+  getGoogleOAuthUrlController,
+  loginWithGoogleController,
   logoutController,
   refreshTokenController,
   resetPasswordController,
@@ -10,6 +12,7 @@ import {
 import { validateBody } from '../middlewars/validateBody.js';
 import {
   loginValidationSchema,
+  loginWithGoogleOAuthSchema,
   registerValidationSchema,
   resetPasswordValidation,
   sendResetEmailBodyValidation,
@@ -43,4 +46,12 @@ authRouter.post(
   '/auth/reset-pwd',
   validateBody(resetPasswordValidation),
   resetPasswordController,
+);
+
+authRouter.get('/get-oauth-url', getGoogleOAuthUrlController);
+
+authRouter.post(
+  '/confirm-google-auth',
+  validateBody(loginWithGoogleOAuthSchema),
+  loginWithGoogleController,
 );
