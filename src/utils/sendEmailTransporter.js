@@ -22,7 +22,7 @@ export const sendMail = async (jwtToken, email, user) => {
       to: `${email}`,
       subject: 'Hello ✔',
       text: 'Here is reset password link',
-      html: `<b>Hello, ${user.name}</b><p>Click <a href="${link}">here</a> to reset password</p>`,
+      html: `<b>Hello, ${user.name}</b><p>Click <a href="${link}">[here] (${link})</a> to reset password</p>`,
     });
   } catch (err) {
     console.log(err);

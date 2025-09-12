@@ -8,6 +8,7 @@ import { errorHandler } from './middlewars/errorHandler.js';
 import { notFoundErr } from './middlewars/notFoundError.js';
 import { authRouter } from './routers/auth.js';
 import { UPLOAD_DIR } from './constants/index.js';
+import { swaggerDocs } from './utils/swaggerDocs.js';
 
 const PORT = Number(getEnvVar('PORT'));
 
@@ -32,6 +33,9 @@ export async function setupServer() {
   app.use(authRouter);
 
   app.use(router);
+
+  app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
 
   app.use(notFoundErr);
 

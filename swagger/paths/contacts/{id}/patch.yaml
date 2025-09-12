@@ -1,0 +1,76 @@
+tags:
+  - Contacts
+summary: Update contact by id
+operationId: patchContact
+description: 'Update contact by id with partial data'
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: '65ca67e7ae7f10c88b598384'
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          name:
+            description: "Contact's name"
+            type: string
+            example: 'John Doe'
+          email:
+            description: Contact's email
+            type: string
+            example: 'example@gmail.com'
+          phoneNumber:
+            description: "Contact's phone number"
+            type: string
+            example: '+380660616897'
+          contactType:
+            description: Contact's type
+            type: string
+            enum: ['work', 'home', 'personal']
+          photo:
+            description: "Contact's photo file"
+            type: string
+            format: binary
+responses:
+  '200':
+    description: Contact successfully updated
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully patched a contact!
+            data:
+              type: object
+              $ref: '../../../components/schemas/contact.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    description: Contact not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: 'Contact not found'
