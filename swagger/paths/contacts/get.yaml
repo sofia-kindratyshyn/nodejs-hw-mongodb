@@ -28,16 +28,11 @@ parameters:
       type: string
       enum: ['asc', 'desc']
       example: 'asc'
-          userId:
-            description: 'Id of user, that created contact'
-            type: string
-            example: 65e4decdd286b30065d54af9
-
   - in: query
     name: name
     schema:
       type: string
-      example: "John"
+      example: 'John'
   - in: query
     name: email
     schema:
@@ -47,16 +42,17 @@ parameters:
     name: phoneNumber
     schema:
       type: string
-      example: "+380660616897"
+      example: '+380660616897'
   - in: query
     name: contactType
     schema:
       type: string
       enum: ['work', 'home', 'personal']
-      example: "home"
+      example: 'home'
   - in: query
     name: userId
     schema:
+      description: 'Id of user, that created contact'
       type: string
       example: 65ca67e7ae7f10c88b598384
 responses:
